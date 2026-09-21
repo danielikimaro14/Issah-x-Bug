@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <a href="https://davex254-sessions.onrender.com/"><img src="https://img.shields.io/badge/PAIR_CODE-OPEN-52525B?style=for-the-badge&labelColor=18181B&logo=whatsapp&logoColor=F4F4F5" alt="Open Pair Code"></a>
+  <a href="https://issahbugxsession.onrender.com/"><img src="https://img.shields.io/badge/PAIR_CODE-OPEN-52525B?style=for-the-badge&labelColor=18181B&logo=whatsapp&logoColor=F4F4F5" alt="Open Pair Code"></a>
   <a href="https://github.com/danielikimaro14/Issah-x-Bug"><img src="https://img.shields.io/badge/REPOSITORY-ISSAH--X-52525B?style=for-the-badge&labelColor=18181B&logo=github&logoColor=F4F4F5" alt="Issah-x-Bug repository"></a>
   <a href="https://github.com/danielikimaro14/Issah-x-Bug/fork"><img src="https://img.shields.io/badge/FORK-OPEN-52525B?style=for-the-badge&labelColor=18181B&logo=github&logoColor=F4F4F5" alt="Fork repository"></a>
   <a href="https://github.com/danielikimaro14/Issah-x-Bug/archive/refs/heads/main.zip"><img src="https://img.shields.io/badge/DOWNLOAD-ZIP-52525B?style=for-the-badge&labelColor=18181B&logo=github&logoColor=F4F4F5" alt="Download ZIP"></a>
