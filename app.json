@@ -1,0 +1,38 @@
+{
+  "name": "Issahbx Bug",
+  "description": "Issah x Bug- WhatsApp MD Multi-Device Bot powered by Baileys",
+  "repository": "https://github.com/danielikimaro14/Issah-x-Bug",
+  "logo": "",
+  "keywords": [
+    "whatsapp",
+    "baileys",
+    "bot",
+    "node",
+    "md",
+    "issah-ultra"
+  ],
+  "stack": "heroku-26",
+  "buildpacks": [
+    {
+      "url": "https://github.com/heroku/heroku-buildpack-nodejs.git"
+    }
+  ],
+  "formation": {
+    "web": {
+      "quantity": 1,
+      "size": "basic"
+    }
+  },
+  "env": {
+    "SESSION_ID": {
+      "description": "issah x v2.0.0 session token (ISSAH-X~...) — get yours on the pairing page",
+      "required": true,
+      "value": ""
+    }
+  },
+  "addons": [
+    {
+      "plan": "heroku-postgresql"
+    }
+  ]
+}
