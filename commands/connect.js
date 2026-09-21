@@ -1,0 +1,87 @@
+// deployManager.js is not part of this repository. A top-level require of a missing
+// module used to crash the process (MODULE_NOT_FOUND) the moment either command was loaded.
+// Load it defensively so the rest of the bot survives, and report the feature as unavailable.
+let deployManager = null;
+try { deployManager = require('../deployManager'); } catch (_) { deployManager = null; }
+const UNAVAILABLE = '\u26a0\ufe0f Deployment manager is not installed on this bot (deployManager.js is missing).';
+
+async function connectCommand(sock, chatId, senderId, message, rawMessage, prefix) {
+    if (!deployManager) return await sock.sendMessage(chatId, { text: UNAVAILABLE });
+    const input = rawMessage.slice(prefix.length + 'connect'.length).trim();
+
+    if (!input) {
+        return await sock.sendMessage(chatId, {
+            text: `🚀 *Quick Bot Deployment*\n\n` +
+                  `*Usage:* ${prefix}connect <session_id>\n\n` +
+                  `*Example:*\n${prefix}connect TRUTH-MD:~eyJub2lzZUt...\n\n` +
+                  `💡 Get your session ID from your existing bot or WhatsApp Web session.`
+        }, { quoted: message });
+    }
+
+    try {
+        if (input.toLowerCase() === 'list') {
+            const userDeployments = deployManager.listUserDeployments(senderId);
+            
+            if (userDeployments.length === 0) {
+                await sock.sendMessage(chatId, {
+                    text: '📭 No active deployments\n\nUse the command above to deploy a bot.'
+                }, { quoted: message });
+                return;
+            }
+
+            let list = `🤖 Your Deployments (${userDeployments.length}/10)\n\n`;
+            userDeployments.forEach((id, index) => {
+                const status = deployManager.getDeploymentStatus(id);
+                list += `${index + 1}. ${status?.isActive ? '🟢' : '🔴'} ${id}\n`;
+            });
+
+            await sock.sendMessage(chatId, { text: list }, { quoted: message });
+
+        } else if (input.toLowerCase() === 'stop') {
+            const userDeployments = deployManager.listUserDeployments(senderId);
+            if (userDeployments.length === 0) {
+                await sock.sendMessage(chatId, { 
+                    text: '❌ No deployments to stop' 
+                }, { quoted: message });
+                return;
+            }
+
+            // Stop the first deployment
+            const result = deployManager.stopDeployment(userDeployments[0], senderId);
+            await sock.sendMessage(chatId, { 
+                text: result.message 
+            }, { quoted: message });
+
+        } else {
+            // Deploy bot with session ID
+            if (!input.startsWith('TRUTH-MD:~')) {
+                await sock.sendMessage(chatId, { 
+                    text: '❌ Session must start with TRUTH-MD:~' 
+                }, { quoted: message });
+                return;
+            }
+
+            await sock.sendMessage(chatId, { 
+                text: '🚀 Deploying bot to your account...' 
+            }, { quoted: message });
+
+            const userInfo = {
+                pushName: message.pushName || 'User',
+                deployTime: new Date().toLocaleString()
+            };
+
+            const result = await deployManager.deployBot(input, senderId, userInfo);
+            await sock.sendMessage(chatId, { 
+                text: result.message 
+            }, { quoted: message });
+        }
+
+    } catch (error) {
+        console.error('Connect command error:', error);
+        await sock.sendMessage(chatId, { 
+            text: '❌ Error: ' + error.message 
+        }, { quoted: message });
+    }
+}
+
+module.exports = connectCommand;
