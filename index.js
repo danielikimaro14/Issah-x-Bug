@@ -369,7 +369,35 @@ async function downloadSessionData() {
             // Check for the prefix and handle the split logic
             const base64Data = global.SESSION_ID.startsWith(SESSION_PREFIX) ? global.SESSION_ID.slice(SESSION_PREFIX.length) : global.SESSION_ID;
             const sessionData = Buffer.from(base64Data, 'base64');
-            await fs.promises.writeFile(credsPath, sessionData);
+            // Older session strings encode buffers as `{ type: "Buffer", data: [] }`.
+            // Current Baileys expects the same wrapper with base64 string data.
+            // Normalize the legacy representation before handing it to
+            // useMultiFileAuthState, otherwise routingInfo remains a plain object
+            // and the Noise handshake fails with a NaN buffer size.
+            let credsData = sessionData;
+            try {
+                const parsed = JSON.parse(sessionData.toString('utf8'));
+                const normalizeLegacyBuffers = (value) => {
+                    if (Array.isArray(value)) return value.map(normalizeLegacyBuffers);
+                    if (!value || typeof value !== 'object') return value;
+                    if (value.type === 'Buffer' && Array.isArray(value.data)) {
+                        return {
+                            type: 'Buffer',
+                            data: Buffer.from(value.data).toString('base64')
+                        };
+                    }
+                    return Object.fromEntries(
+                        Object.entries(value).map(([key, child]) => [
+                            key,
+                            normalizeLegacyBuffers(child)
+                        ])
+                    );
+                };
+                credsData = Buffer.from(JSON.stringify(normalizeLegacyBuffers(parsed)));
+            } catch (parseError) {
+                log(`Session format normalization failed: ${parseError.message}`, 'red', true);
+            }
+            await fs.promises.writeFile(credsPath, credsData);
             log(`Session successfully saved.`, 'green');
         }
     } catch (err) { log(`Error downloading session data: ${err.message}`, 'red', true); }
