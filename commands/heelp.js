@@ -308,10 +308,7 @@ async function helpCommand(sock, chatId, message) {
     // Random thumbnail selection from local files
     const thumbnailFiles = [
         'menu1.jpg',
-        'menu2.jpg', 
-        'menu3.jpg',
-        'menu4.jpg',
-        'menu5.jpg'
+        'menu3.jpg'
     ];
     const randomThumbFile = thumbnailFiles[Math.floor(Math.random() * thumbnailFiles.length)];
     const thumbnailPath = path.join(__dirname, '../assets', randomThumbFile);

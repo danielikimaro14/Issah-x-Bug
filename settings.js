@@ -7,6 +7,8 @@
 require('dotenv').config();
 
 const botName = 'Issahx Bug Bot';
+const repositoryUrl = 'https://github.com/danielikimaro14/Issah-x-Bug';
+const repositoryApiUrl = 'https://api.github.com/repos/danielikimaro14/Issah-x-Bug';
 
 const settings = {
   packname: botName,
@@ -21,9 +23,11 @@ const settings = {
   storeWriteInterval: 10000,
   description: "This is a bot for managing group commands and automating tasks.",
   version: "2.7.6",
+  repositoryUrl,
+  repositoryApiUrl,
   updateBranch: 'main',
   updateZipToken: '',
-  updateZipUrl: "https://github.com/danielikimaro14/Issah-x-Bug/archive/refs/heads/main.zip",
+  updateZipUrl: `${repositoryUrl}/archive/refs/heads/main.zip`,
   timezone: process.env.BOT_TIMEZONE || 'Africa/Nairobi',   // was 'Africa/nairobi'; Intl tolerates the bad case but moment-timezone throws on it
 };
 

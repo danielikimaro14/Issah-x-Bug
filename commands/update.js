@@ -51,10 +51,11 @@ async function updateViaGit(sock, chatId, message) {
     const oldRev = (await run('git rev-parse HEAD').catch(() => 'unknown')).trim();
     await updateProgress(sock, chatId, message, `📦 Current: ${oldRev.substring(0, 7)}`);
     
+    await run(`git remote set-url origin "${settings.repositoryUrl}.git"`);
     await run('git fetch --all --prune');
     await updateProgress(sock, chatId, message, '📦 Checking for updates...');
     
-    const newRev = (await run('git rev-parse origin/main')).trim();
+    const newRev = (await run(`git rev-parse origin/${settings.updateBranch}`)).trim();
     const alreadyUpToDate = oldRev === newRev;
     
     if (alreadyUpToDate) {
